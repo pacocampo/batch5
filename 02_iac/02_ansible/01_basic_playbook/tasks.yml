@@ -1,0 +1,11 @@
+- hosts: localhost
+  tasks:
+  - name: lista directorios
+    shell : ls
+  - name: saludos
+    shell: echo hola mundo
+  - name: instala numpy
+    pip:
+      name: numpy
+      state: present
+  

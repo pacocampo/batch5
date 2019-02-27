@@ -1,0 +1,22 @@
+- name: Delete instance(s)
+  hosts: localhost
+  gather_facts: no
+  connection: local
+
+  vars: 
+    service_account_email: paco-406@fir-ccd32.iam.gserviceaccount.com
+    credentials_file: inventory/fir-ccd32-a8fb7748b0ea.json
+    project_id: fir-ccd32
+
+  tasks:
+    - name: delete test-instances
+      # Basic termination of instance.
+      gce:
+        service_account_email: "{{ service_account_email }}"
+        credentials_file: "{{ credentials_file }}"
+        project_id: "{{ project_id }}"
+        instance_names: dev
+        zone: us-central1-a
+        state: deleted
+      tags:
+        - delete

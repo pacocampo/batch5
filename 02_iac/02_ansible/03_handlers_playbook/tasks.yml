@@ -1,0 +1,20 @@
+- hosts: localhost
+  become: false
+  tasks:
+  - name: lista directorios
+    shell : ls
+  - name: saludos
+    shell: echo hola mundo
+    notify: print
+  - name: instala pip
+    apt:
+      name: python-pip
+      state: present
+    notify: notificame
+  handlers:
+    - name: notificame
+      pip:
+        name: numpy
+        state: present
+    - name: print
+      shell: echo handler ejecutado
