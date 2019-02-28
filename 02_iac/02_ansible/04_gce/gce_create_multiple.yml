@@ -1,9 +1,9 @@
 - name: Compute Engine Instance Examples
   hosts: localhost
   vars:
-    service_account_email: '{{ lookup("env", "GCP_ACCOUNT_EMAIL") }}'
-    credentials_file: '{{ lookup("env", "GCP_FILE") }}'
-    project_id: '{{ lookup("env", "GCP_PROJECT_ID") }}'
+    service_account_email: "{{ lookup('env', 'GCP_ACCOUNT_MAIL') }}"
+    credentials_file: "{{ lookup('env', 'GCP_ACCOUNT_FILE') }}"
+    project_id: "{{ lookup('env', 'GCP_PROJECT_ID') }}"
   tasks:
     - name: create multiple instances
       # Basic provisioning example.  Create multiple Debian 8 instances in the
@@ -28,7 +28,7 @@
 
     - name: Wait for SSH for instances
       wait_for:
-        delay: 1s
+        delay: 1
         host: "{{ item.public_ip }}"
         port: 22
         state: started

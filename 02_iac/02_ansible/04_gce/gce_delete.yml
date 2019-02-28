@@ -4,9 +4,9 @@
   connection: local
 
   vars: 
-    service_account_email: paco-406@fir-ccd32.iam.gserviceaccount.com
-    credentials_file: inventory/fir-ccd32-a8fb7748b0ea.json
-    project_id: fir-ccd32
+    service_account_email: "{{ lookup('env', 'GCP_ACCOUNT_MAIL') }}"
+    credentials_file: "{{ lookup('env', 'GCP_ACCOUNT_FILE') }}"
+    project_id: "{{ lookup('env', 'GCP_PROJECT_ID') }}"
 
   tasks:
     - name: delete test-instances

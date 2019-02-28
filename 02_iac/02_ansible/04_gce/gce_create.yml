@@ -6,9 +6,9 @@
   vars:
     machine_type: n1-standard-1 # default
     image: debian-7
-    service_account_email: paco-406@fir-ccd32.iam.gserviceaccount.com
-    credentials_file: inventory/fir-ccd32-a8fb7748b0ea.json
-    project_id: fir-ccd32
+    service_account_email: ansible@keen-clarity-231522.iam.gserviceaccount.com
+    credentials_file: /Users/pacocampo/Downloads/keen-clarity-231522-b0476898d9e7.json
+    project_id: keen-clarity-231522
 
   tasks:
     - name: Launch instances
@@ -16,9 +16,9 @@
           instance_names: dev
           machine_type: "{{ machine_type }}"
           image: "{{ image }}"
-          service_account_email: "{{ service_account_email }}"
-          credentials_file: "{{ credentials_file }}"
-          project_id: "{{ project_id }}"
+          service_account_email: ansible@keen-clarity-231522.iam.gserviceaccount.com
+          credentials_file: /Users/pacocampo/Downloads/keen-clarity-231522-b0476898d9e7.json
+          project_id: keen-clarity-231522
           tags: webserver
       register: gce
 
