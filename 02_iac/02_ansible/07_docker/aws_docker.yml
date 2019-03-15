@@ -7,6 +7,7 @@
     security_group: launch-wizard-1
     image: ami-0ac019f4fcb7cb7e6
     region: us-east-1
+    docker_network: my_network
   tasks:
     - name: Launch instance
       ec2:
@@ -41,13 +42,37 @@
   remote_user: ubuntu
   gather_facts: false
 
+  vars:
+    docker_network: my_network
+
+  pre_tasks:
+    - name: 'install python3'
+      raw: 'sudo apt -y install python3'
+    - name: 'install pip'
+      raw: 'sudo apt -y update && sudo apt -y install python3-pip'
+    - name: 'install docker'
+      raw: 'sudo pip3 install ansible'
+    - name: 'install docker'
+      raw: 'sudo pip3 install docker-py'
+    - name: 'curl docker'
+      raw: 'curl -sSL https://get.docker.com/ | sh'
+    - name: 'run docker'
+      raw: 'sudo systemctl start docker.service'
+
   tasks:
-    - name: Instala NGINX
-      apt:
-        name: nginx
-        state: present
-    #  Instala Docker
-    - name: Instala Docker
-      apt:
-        name: docker-ce
-        state: present
+    - name: "Create a network"
+      docker_network:
+        name: "{{ docker_network }}"
+    - name: "Launch database container"
+      docker_container:
+        name: nginx_local
+        image: nginx:latest
+        restart: true
+        networks:
+          - name: "{{ docker_network }}"
+            aliases:
+              - nginx
+        env:
+          HOST: dev
+        ports:
+          - "80:80"
