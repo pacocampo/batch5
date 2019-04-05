@@ -35,12 +35,18 @@
         timeout: 30
       with_items: "{{ gce.instance_data }}"
 
-    # - name: Configure Hosts
-    #   hosts: gce_instances_ips
-    #   become: yes
-    #   become_method: sudo
-    #   roles:
-    #     - my-role-one
-    #     - my-role-two
-    #   tags:
-    #     - config
+#Install python & httpd
+    - hosts: gce_instances_ips #nombre de grupo de instancias
+      become: true
+      connection: ssh
+      remote_user: ubuntu
+      gather_facts: false
+      pre_tasks:
+        - name: 'install python'
+          raw: 'sudo yum -y install python'
+      tasks:
+      #  Instala Docker
+        - name: Instala Docker
+          yum:
+            name: docker-ce
+            state: started

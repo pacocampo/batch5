@@ -1,0 +1,78 @@
+- name: Create a sandbox instance
+  hosts: localhost
+  remote_user: ubuntu #El usuario para conectarse por ssh, por default es ec2-user
+  vars:
+    keypair: pem_file #Nombre de los Key pair
+    instance_type: t2.micro
+    security_group: launch-wizard-1
+    image: ami-0ac019f4fcb7cb7e6
+    region: us-east-1
+    docker_network: my_network
+  tasks:
+    - name: Launch instance
+      ec2:
+         key_name: "{{ keypair }}"
+         group: "{{ security_group }}"
+         instance_type: "{{ instance_type }}"
+         image: "{{ image }}"
+         wait: true
+         region: "{{ region }}"
+         count: 2 #Número de instancias a crear
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host: #Modulo para agrupar host
+        hostname: "{{ item.public_ip }}"
+        groupname: launched # nombre de grupo de instancias creadas
+      with_items: "{{ ec2.instances }}"
+
+    - name: Wait for SSH for instances
+      wait_for:
+        delay: 1
+        host: "{{ item.public_ip }}"
+        port: 22
+        state: started
+        timeout: 30
+      with_items: "{{ ec2.instances }}"
+
+#Install python & httpd
+- hosts: launched #nombre de grupo de instancias
+  become: true
+  connection: ssh
+  remote_user: ubuntu
+  gather_facts: false
+
+  vars:
+    docker_network: my_network
+
+  pre_tasks:
+    - name: 'install python3'
+      raw: 'sudo apt -y install python3'
+    - name: 'install pip'
+      raw: 'sudo apt -y update && sudo apt -y install python3-pip'
+    - name: 'install docker'
+      raw: 'sudo pip3 install ansible'
+    - name: 'install docker'
+      raw: 'sudo pip3 install docker-py'
+    - name: 'curl docker'
+      raw: 'curl -sSL https://get.docker.com/ | sh'
+    - name: 'run docker'
+      raw: 'sudo systemctl start docker.service'
+
+  tasks:
+    - name: "Create a network"
+      docker_network:
+        name: "{{ docker_network }}"
+    - name: "Launch database container"
+      docker_container:
+        name: nginx_local
+        image: nginx:latest
+        restart: true
+        networks:
+          - name: "{{ docker_network }}"
+            aliases:
+              - nginx
+        env:
+          HOST: dev
+        ports:
+          - "80:80"

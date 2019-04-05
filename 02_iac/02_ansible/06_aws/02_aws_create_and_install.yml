@@ -43,3 +43,13 @@
 
 
 
+  tasks:
+    - name: Instala NGINX
+      apt:
+        name: nginx
+        state: present
+    #  Instala Docker
+    - name: Instala Docker
+      apt:
+        name: docker-ce
+        state: present
