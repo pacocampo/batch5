@@ -6,9 +6,9 @@
   vars:
     machine_type: n1-standard-1 # default
     image: debian-7
-    service_account_email: ansible@keen-clarity-231522.iam.gserviceaccount.com
-    credentials_file: /Users/pacocampo/Downloads/keen-clarity-231522-b0476898d9e7.json
-    project_id: keen-clarity-231522
+    service_account_email: "{{ lookup('env', 'GCP_ACCOUNT_MAIL') }}"
+    credentials_file: "{{ lookup('env', 'GCP_ACCOUNT_FILE') }}"
+    project_id: "{{ lookup('env', 'GCP_PROJECT_ID') }}"
 
   tasks:
     - name: Launch instances
@@ -16,9 +16,9 @@
           instance_names: dev
           machine_type: "{{ machine_type }}"
           image: "{{ image }}"
-          service_account_email: ansible@keen-clarity-231522.iam.gserviceaccount.com
-          credentials_file: /Users/pacocampo/Downloads/keen-clarity-231522-b0476898d9e7.json
-          project_id: keen-clarity-231522
+          service_account_email: "{{ lookup('env', 'GCP_ACCOUNT_MAIL') }}"
+          credentials_file: "{{ lookup('env', 'GCP_ACCOUNT_FILE') }}"
+          project_id: "{{ lookup('env', 'GCP_PROJECT_ID') }}"
           tags: webserver
       register: gce
 
